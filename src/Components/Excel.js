@@ -42,7 +42,7 @@ function App() {
 
   // ✅ Download PDF
   const handleDownload = () => {
-    fetch("https://mvc-meesho-backend.onrender.com/download-pdf", {
+    fetch("https://mvc-meesho-backend-1.onrender.com/download-pdf", {
       method: "GET",
       headers: { Accept: "application/pdf" },
     })
@@ -114,7 +114,7 @@ function App() {
     }
     try {
       const res = await axios.get(
-        `https://mvc-meesho-backend.onrender.com/filter/${subOrderNo}`
+        `https://mvc-meesho-backend-1.onrender.com/filter/${subOrderNo}`
       );
       setFilterResult(res.data);
 
@@ -140,7 +140,7 @@ function App() {
       formData.append("file", file);
 
       const uploadRes = await axios.post(
-        "https://mvc-meesho-backend.onrender.com/upload",
+        "https://mvc-meesho-backend-1.onrender.com/upload",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
