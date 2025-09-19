@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.css'; // make sure the filename matches
 
 function Login() {
-  const [mode, setMode] = useState('login'); // login, register, otp, profile
+  const [mode, setMode] = useState('login'); // login, signup, otp, profile
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -21,35 +21,42 @@ function Login() {
 
     if (mode === 'signup') {
       try {
-        const res = await fetch('https://report-backend-bnv1.onrender.com/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.fullName,   // ✅ match backend
-            email: formData.email,
-            phone: formData.phone,     // ✅ match backend
-            password: formData.password,
-          }),
-        });
+        const res = await fetch(
+          'https://mvc-meesho-backend.onrender.com/api/auth/signup',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fullname: formData.fullName, // ✅ match backend
+              email: formData.email,
+              phoneNumber: formData.phone, // ✅ match backend
+              password: formData.password,
+            }),
+          }
+        );
 
         const data = await res.json();
-        alert(data.msg);
+        alert(data.message); // ✅ use "message" not "msg"
         if (res.ok) {
           setMode('otp');
         }
-      } catch {
+      } catch (err) {
         alert('Signup failed.');
+        console.error(err);
       }
     } else if (mode === 'login') {
       try {
-        const res = await fetch('https://report-backend-bnv1.onrender.com/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
+        const res = await fetch(
+          'https://mvc-meesho-backend.onrender.com/api/auth/login',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+            }),
+          }
+        );
 
         const data = await res.json();
         if (data.token) {
@@ -57,10 +64,11 @@ function Login() {
           alert('Login successful');
           setMode('profile');
         } else {
-          alert(data.msg || 'Login failed');
+          alert(data.message || 'Login failed'); // ✅ use message
         }
-      } catch {
+      } catch (err) {
         alert('Login failed.');
+        console.error(err);
       }
     }
   };
@@ -68,21 +76,25 @@ function Login() {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://report-backend-bnv1.onrender.com/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, otp }),
-      });
+      const res = await fetch(
+        'https://mvc-meesho-backend.onrender.com/api/auth/verify-otp',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: formData.email, otp }),
+        }
+      );
 
       const data = await res.json();
-      alert(data.msg);
-      if (res.ok) {
+      alert(data.message); // ✅ use message
+      if (res.ok && data.success) {
         setMode('login');
         setFormData({ fullName: '', email: '', phone: '', password: '' });
         setOtp('');
       }
-    } catch {
+    } catch (err) {
       alert('OTP verification failed.');
+      console.error(err);
     }
   };
 
